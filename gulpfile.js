@@ -31,7 +31,9 @@ const staticTags = [
   'src/tags/remove-image.tag',
   'src/tags/image-size.tag',
   'src/tags/image-tag.tag',
-  'src/tags/image-date.tag'
+  'src/tags/image-date.tag',
+  'src/tags/tag-history-button.tag',
+  'src/tags/tag-history.tag'
 ];
 
 const staticScripts = [
@@ -115,4 +117,16 @@ function fonts() {
     .pipe(gulp.dest('dist/fonts'));
 };
 
-exports.build = series(clean, html, parallel(fonts, styles, vendor, app, appStatic));
+function svgs() {
+  return gulp.src(['src/images/*.svg'])
+    .pipe(htmlmin({
+      removeComments: false,
+      collapseWhitespace: true,
+      removeRedundantAttributes: true,
+      removeEmptyAttributes: true,
+      minifyJS: uglify
+    }))
+    .pipe(gulp.dest('dist/images/'));
+};
+
+exports.build = series(clean, html, parallel(fonts, styles, vendor, app, appStatic, svgs));
